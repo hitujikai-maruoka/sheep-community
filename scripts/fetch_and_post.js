@@ -61,6 +61,7 @@ async function main() {
     await postToSanity({
       title: item.title,
       summary: '', // 要約なし
+      body: `引用元: [${item.title}](${item.link})`,
       url: item.link,
       tags
     });
