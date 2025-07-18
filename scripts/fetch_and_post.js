@@ -10,7 +10,6 @@ const openai = new OpenAI({
 });
 
 const FEEDS = [
-  'https://www.reuters.com/rssFeed/topNews',
   'http://feeds.bbci.co.uk/news/rss.xml',
   'https://www3.nhk.or.jp/rss/news/cat0.xml',
   'http://export.arxiv.org/rss/cs',
