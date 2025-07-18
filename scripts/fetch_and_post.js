@@ -20,7 +20,7 @@ async function postToSanity({title, summary, url, tags}) {
       {
         mutations: [{
           create: {
-            _type: 'post',
+            _type: 'article',
             title,
             summary,
             url,
