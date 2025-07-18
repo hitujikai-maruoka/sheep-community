@@ -1,25 +1,31 @@
 const Parser = require('rss-parser');
 const axios = require('axios');
-const { Configuration, OpenAIApi } = require('openai');
+const { OpenAI } = require('openai');
 
 console.log("=== スクリプト開始 ===");
 
 const parser = new Parser();
-const openai = new OpenAIApi(new Configuration({ apiKey: process.env.OPENAI_API_KEY }));
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 const FEEDS = [
-  // ...（省略）
+  'https://www.reuters.com/rssFeed/topNews',
+  'http://feeds.bbci.co.uk/news/rss.xml',
+  'https://www3.nhk.or.jp/rss/news/cat0.xml',
+  'http://export.arxiv.org/rss/cs',
+  'https://prtimes.jp/main/html/rss/prtimes_rss.xml'
 ];
 
 async function summarize(text) {
   console.log("要約処理開始");
   const prompt = `次の英文ニュースを日本語で3行以内に要約してください：\n${text}`;
-  const res = await openai.createChatCompletion({
+  const res = await openai.chat.completions.create({
     model: 'gpt-3.5-turbo',
     messages: [{role: 'user', content: prompt}],
     max_tokens: 200
   });
-  return res.data.choices[0].message.content.trim();
+  return res.choices[0].message.content.trim();
 }
 
 async function postToSanity({title, summary, url, tags}) {
