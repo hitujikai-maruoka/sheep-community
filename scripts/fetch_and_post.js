@@ -1,13 +1,8 @@
 const Parser = require('rss-parser');
 const axios = require('axios');
-const { OpenAI } = require('openai');
-
 console.log("=== スクリプト開始 ===");
 
 const parser = new Parser();
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
 
 const FEEDS = [
   'http://feeds.bbci.co.uk/news/rss.xml',
@@ -15,16 +10,7 @@ const FEEDS = [
   'http://export.arxiv.org/rss/cs'
 ];
 
-async function summarize(text) {
-  console.log("要約処理開始");
-  const prompt = `次の英文ニュースを日本語で3行以内に要約してください：\n${text}`;
-  const res = await openai.chat.completions.create({
-    model: 'gpt-3.5-turbo',
-    messages: [{role: 'user', content: prompt}],
-    max_tokens: 200
-  });
-  return res.choices[0].message.content.trim();
-}
+
 
 async function postToSanity({title, summary, url, tags}) {
   console.log("Sanity投稿開始:", title);
@@ -71,26 +57,14 @@ async function main() {
 
   for (const item of allItems) {
     console.log("記事処理開始:", item.title);
-    // 本文500文字までに制限
-    const baseText = (item.contentSnippet || item.title || '').slice(0, 500);
-    try {
-      const summary = await summarize(baseText);
-      const tags = [];
-      await postToSanity({
-        title: item.title,
-        summary,
-        url: item.link,
-        tags
-      });
-      console.log("記事処理完了:", item.title);
-    } catch (err) {
-      if (err.code === 'insufficient_quota' || err.status === 429) {
-        console.error("OpenAI APIの無料枠・利用上限に達しました。要約を中断します。", err.message);
-        break;
-      } else {
-        console.error("記事要約時エラー:", item.title, err.message);
-      }
-    }
+    const tags = [];
+    await postToSanity({
+      title: item.title,
+      summary: '', // 要約なし
+      url: item.link,
+      tags
+    });
+    console.log("記事処理完了:", item.title);
   }
 }
 
