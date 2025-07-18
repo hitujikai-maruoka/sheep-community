@@ -12,8 +12,7 @@ const openai = new OpenAI({
 const FEEDS = [
   'http://feeds.bbci.co.uk/news/rss.xml',
   'https://www3.nhk.or.jp/rss/news/cat0.xml',
-  'http://export.arxiv.org/rss/cs',
-  'https://prtimes.jp/main/html/rss/prtimes_rss.xml'
+  'http://export.arxiv.org/rss/cs'
 ];
 
 async function summarize(text) {
