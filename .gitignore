@@ -27,3 +27,6 @@
 
 # Dotenv and similar local-only files
 *.local
+
+# 文字起こし用モデル（scripts/transcribe.py が自動ダウンロード）
+/models
